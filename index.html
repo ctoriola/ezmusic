@@ -129,7 +129,7 @@
   <main id="main">
 
     <!-- ===================== HERO ===================== -->
-    <section class="hero wrap" aria-labelledby="hero-title" data-audio="https://new.eezeeconceptz.org/assets/De-SAMIST-DONE-IT-AGAIN.mp3">
+    <section class="hero wrap" aria-labelledby="hero-title">
       <div class="hero-card">
         <img class="hero-bg" src="assets/img/hero.webp" alt="" width="2000" height="1333" fetchpriority="high">
 
@@ -151,24 +151,50 @@
           </div>
         </div>
 
-        <button class="sound-toggle" type="button" aria-pressed="false" data-sound>
-          <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
-          <span class="sound-label">Play music</span>
-        </button>
+        <!-- Playlist: edit tracks here. "kind" is "full" (hosted file) or "preview".
+             Previews are Apple Music's official 30-second clips: keep them streamed from
+             Apple with the Apple Music "link", as Apple's terms require. -->
+        <script type="application/json" id="playlist">
+          [
+            {"title": "Done It Again", "artist": "De Samist", "cover": "assets/img/rel-done-it-again.webp", "src": "https://new.eezeeconceptz.org/assets/De-SAMIST-DONE-IT-AGAIN.mp3", "kind": "full", "link": "https://music.apple.com/ng/album/done-it-again/1842368017?i=1842368020"},
+            {"title": "Glorified ft. Kaestrings", "artist": "Esther Oji", "cover": "assets/img/rel-glorified.webp", "src": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/d7/32/67/d73267b9-114f-8d92-7883-3cf5d99b0691/mzaf_5318555227404705809.plus.aac.p.m4a", "kind": "preview", "link": "https://music.apple.com/ng/album/glorified/6821935415?i=6821935418"},
+            {"title": "Zam", "artist": "Uchenna Okereke", "cover": "assets/img/rel-zam.webp", "src": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/c7/44/89/c7448958-7908-4ce3-33cd-6c803ce44f4a/mzaf_2078504720127642533.plus.aac.p.m4a", "kind": "preview", "link": "https://music.apple.com/ng/album/zam/6809854086?i=6809854090"},
+            {"title": "Miracle Working God", "artist": "Uchenna Okereke", "cover": "assets/img/rel-miracle.webp", "src": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/2d/79/71/2d797184-7e29-24dd-c19c-a6f264f9c238/mzaf_6201551650225753725.plus.aac.p.m4a", "kind": "preview", "link": "https://music.apple.com/ng/album/miracle-working-god/6800731392?i=6800731393"},
+            {"title": "Oh My Daddy", "artist": "De Samist", "cover": "assets/img/rel-ohmydaddy.webp", "src": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/a0/87/0e/a0870ec8-2fc4-8b28-51d1-c9983663e0cb/mzaf_4571588869943206504.plus.aac.p.m4a", "kind": "preview", "link": "https://music.apple.com/ng/album/oh-my-daddy/6788740178?i=6788740180"},
+            {"title": "Bilie (Remix) ft. Labisi", "artist": "Uchenna Okereke", "cover": "assets/img/rel-bilie-remix.webp", "src": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/d9/6a/f1/d96af13c-08f0-8fc5-0540-fc0e7aa4eeca/mzaf_17781580307773092633.plus.aac.p.m4a", "kind": "preview", "link": "https://music.apple.com/ng/album/bilie-feat-labisi-remix/6788740188?i=6788740266"},
+            {"title": "Assurance", "artist": "Labisi", "cover": "assets/img/rel-assurance.webp", "src": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/d4/62/74/d46274ea-5c84-fd26-106f-99fd319678d5/mzaf_16732700491853944975.plus.aac.p.m4a", "kind": "preview", "link": "https://music.apple.com/ng/album/assurance/6776184519?i=6776184525"},
+            {"title": "Praise Medley 1", "artist": "Uchenna Okereke", "cover": "assets/img/rel-praise-medley.webp", "src": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/d8/9e/2e/d89e2e32-0a7f-468a-e834-eef3f0693b1f/mzaf_12908313976371335544.plus.aac.p.m4a", "kind": "preview", "link": "https://music.apple.com/ng/album/praise-medley-1/6771815944?i=6771816337"},
+            {"title": "Bilie", "artist": "Uchenna Okereke", "cover": "assets/img/rel-bilie.webp", "src": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/84/15/f0/8415f002-3723-d537-27d0-6dc3df5d18f9/mzaf_2614783872953678331.plus.aac.p.m4a", "kind": "preview", "link": "https://music.apple.com/ng/album/bilie/6768746433?i=6768746443"}
+          ]
+        </script>
 
-        <!-- Mobile only: glass card + music toggle merged into a "now playing" bar -->
-        <div class="hero-player glass" role="group" aria-label="Featured track">
-          <img src="assets/img/artist-desamist.webp" alt="" width="900" height="900">
-          <div class="hp-meta">
-            <strong>Done It Again</strong>
-            <span>De Samist</span>
-          </div>
-          <span class="hp-eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
-          <button class="hp-play" type="button" aria-pressed="false" aria-label="Play Done It Again by De Samist" data-sound>
-            <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg>
-            <svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" fill="currentColor"/></svg>
-          </button>
+        <!-- Desktop: "now playing" pill -->
+        <div class="sound-toggle" role="group" aria-label="Music player">
+          <img data-pl="cover" src="assets/img/rel-done-it-again.webp" alt="" width="600" height="600">
+          <span class="st-meta" data-pl-swap>
+            <small><span data-pl="status">Featured track</span> <i>&middot;</i> <span data-pl="count">1/9</span> <i>&middot;</i> <a data-pl="link" href="https://music.apple.com/ng/album/done-it-again/1842368017?i=1842368020" target="_blank" rel="noopener">Apple Music&nbsp;&#8599;</a></small>
+            <strong><span data-pl="title">Done It Again</span> <i>&middot;</i> <span data-pl="artist">De Samist</span></strong>
+          </span>
+          <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+          <span class="st-controls">
+            <button class="st-skip" type="button" data-pl="prev" aria-label="Previous track"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h2.2v14H6zM19.5 5.6v12.8L9.4 12z" fill="currentColor"/></svg></button>
+            <button class="st-play" type="button" data-pl="play" aria-pressed="false" aria-label="Play Done It Again by De Samist"><svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg><svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" fill="currentColor"/></svg></button>
+            <button class="st-skip" type="button" data-pl="next" aria-label="Next track"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.8 5H18v14h-2.2zM4.5 5.6v12.8L14.6 12z" fill="currentColor"/></svg></button>
+          </span>
         </div>
+
+        <!-- Mobile: "now playing" bar (replaces the pill and glass card under 820px) -->
+        <div class="hero-player glass" role="group" aria-label="Music player">
+          <img data-pl="cover" src="assets/img/rel-done-it-again.webp" alt="" width="600" height="600">
+          <div class="hp-meta" data-pl-swap>
+            <strong data-pl="title">Done It Again</strong>
+            <span><span data-pl="artist">De Samist</span> <i aria-hidden="true"></i> <a data-pl="link" href="https://music.apple.com/ng/album/done-it-again/1842368017?i=1842368020" target="_blank" rel="noopener">Apple Music</a></span>
+          </div>
+          <button class="hp-skip" type="button" data-pl="prev" aria-label="Previous track"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h2.2v14H6zM19.5 5.6v12.8L9.4 12z" fill="currentColor"/></svg></button>
+          <button class="hp-play" type="button" data-pl="play" aria-pressed="false" aria-label="Play Done It Again by De Samist"><svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg><svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" fill="currentColor"/></svg></button>
+          <button class="hp-skip" type="button" data-pl="next" aria-label="Next track"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.8 5H18v14h-2.2zM4.5 5.6v12.8L14.6 12z" fill="currentColor"/></svg></button>
+        </div>
+        <p class="sr-only" aria-live="polite" data-pl="live"></p>
       </div>
     </section>
 

@@ -42,9 +42,29 @@ On screens up to 820px wide the hero is redesigned rather than just shrunk:
 
 - **Layout:** it fits one screen. The turntable photo fills the top, and the tag, headline and two equal-width buttons sit at the bottom over a dark fade.
 - **One message:** the giant "Gospel Music" word and the tag's pill are hidden on phones, so the headline is the only message.
-- **"Now playing" bar:** the desktop glass card and "Play music" pill become one bar (De Samist, "Done It Again"). The play button's ring fills as the track plays.
-- **Shared audio:** both controls share one audio element, set by `data-audio` on the hero `<section>`. Nothing downloads until someone presses play.
-- **Track name:** taken from the audio file name (`De-SAMIST-DONE-IT-AGAIN.mp3`). Change it in the `.hero-player` markup and the `aria-label` in `main.js` if it's wrong.
+- **"Now playing" bar:** the music player moves to the bottom of the hero as a bar (see Music player below).
+
+## Music player
+
+The hero has a 9-track player: a "now playing" pill at the top right on desktop, and a bar at the bottom of the hero on phones.
+
+- **Display:** shows the cover, title, artist, status ("Now playing", "Paused", "30s preview") and position (e.g. 2/9). On desktop the cover spins like a record while playing.
+- **Controls:**
+  - Play/pause has a ring that fills with progress.
+  - Previous restarts the current track if more than 3 seconds have played, and otherwise goes back a track.
+  - Next skips ahead. Tracks also advance on their own and wrap round at the end.
+  - On phones narrower than 480px, previous is hidden to make room.
+- **Lock screen:** works with lock-screen and headphone controls (Media Session API).
+- **Loading:** never autoplays, and nothing downloads until play is pressed. A track that fails to load is skipped.
+
+**Editing tracks:** the list is the `<script type="application/json" id="playlist">` block inside the hero in `index.html`. Each track has `title`, `artist`, `cover`, `src`, `kind` (`full` or `preview`) and `link`.
+
+| Track | Audio |
+|---|---|
+| Done It Again (De Samist) | Full song, hosted on new.eezeeconceptz.org |
+| The other 8 homepage releases | Apple Music 30-second previews |
+
+The previews come from Apple's public iTunes Search API. Apple's terms require them to be streamed from Apple, not downloaded and re-hosted, with a link to the track on Apple Music. Both are already in place. To play full songs instead, upload the MP3s and change each track's `src` and `kind` to `"full"`.
 
 ## Dark mode
 

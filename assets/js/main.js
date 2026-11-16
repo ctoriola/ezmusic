@@ -88,37 +88,113 @@
     counters.forEach((c) => co.observe(c));
   }
 
-  /* Opt-in background music (never autoplays, nothing downloads until play).
-     Desktop uses the pill in the hero corner; mobile uses the "now playing" bar.
-     Both drive one shared Audio element and stay in sync. */
+  /* Hero music player.
+     One Audio element drives the desktop pill and the mobile bar (every element
+     marked data-pl="..." is kept in sync). Never autoplays; nothing downloads
+     until the visitor presses play. Tracks come from the #playlist JSON block. */
   const hero = document.querySelector('.hero');
-  const soundBtns = [...document.querySelectorAll('[data-sound]')];
-  const player = document.querySelector('.hero-player');
-  if (hero && soundBtns.length) {
-    let audio;
-    const sync = (playing, failed) => {
-      soundBtns.forEach((btn) => {
-        btn.setAttribute('aria-pressed', String(playing));
-        const label = btn.querySelector('.sound-label');
-        if (label) label.textContent = failed ? 'Audio unavailable' : playing ? 'Music on' : 'Play music';
-        if (btn.classList.contains('hp-play')) btn.setAttribute('aria-label', `${playing ? 'Pause' : 'Play'} Done It Again by De Samist`);
+  const listEl = document.getElementById('playlist');
+  let tracks = [];
+  try { tracks = JSON.parse(listEl ? listEl.textContent : '[]'); } catch (e) { tracks = []; }
+
+  if (hero && tracks.length) {
+    const all = (name) => [...hero.querySelectorAll(`[data-pl="${name}"]`)];
+    const audio = new Audio();
+    audio.preload = 'none';
+    audio.volume = 0.6;
+    let idx = 0;
+    let started = false;
+    let failures = 0;
+
+    const current = () => tracks[idx];
+    const label = () => `${current().title} by ${current().artist}`;
+    const playing = () => !audio.paused && !audio.ended;
+
+    const paint = () => {
+      const on = playing();
+      hero.classList.toggle('is-playing', on);
+      all('play').forEach((b) => {
+        b.setAttribute('aria-pressed', String(on));
+        b.setAttribute('aria-label', `${on ? 'Pause' : 'Play'} ${label()}`);
       });
-      if (player) player.classList.toggle('is-playing', playing);
+      const base = on ? 'Now playing' : started ? 'Paused' : 'Featured track';
+      all('status').forEach((el) => { el.textContent = current().kind === 'preview' ? `${base} · 30s preview` : base; });
+      if ('mediaSession' in navigator) navigator.mediaSession.playbackState = on ? 'playing' : 'paused';
     };
-    const ensureAudio = () => {
-      if (audio) return audio;
-      audio = new Audio(hero.dataset.audio);
-      audio.loop = true; audio.volume = 0.5;
-      audio.addEventListener('timeupdate', () => {
-        if (player && audio.duration) player.style.setProperty('--p', (audio.currentTime / audio.duration).toFixed(4));
+
+    const render = (dir) => {
+      const t = current();
+      all('cover').forEach((img) => { img.src = t.cover; });
+      all('title').forEach((el) => { el.textContent = t.title; });
+      all('artist').forEach((el) => { el.textContent = t.artist; });
+      all('count').forEach((el) => { el.textContent = `${idx + 1}/${tracks.length}`; });
+      all('link').forEach((a) => { a.href = t.link; a.setAttribute('aria-label', `${label()} on Apple Music (opens in a new tab)`); });
+      hero.style.setProperty('--p', 0);
+      if (dir && !reduce) {
+        hero.style.setProperty('--dir', dir);
+        hero.classList.remove('pl-swap');
+        void hero.offsetWidth; // restart the swap animation
+        hero.classList.add('pl-swap');
+      }
+      if ('mediaSession' in navigator && 'MediaMetadata' in window) {
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: t.title, artist: t.artist, album: 'EeZee Conceptz',
+          artwork: [{ src: new URL(t.cover, location.href).href, sizes: '600x600', type: 'image/webp' }],
+        });
+      }
+      paint();
+    };
+
+    const play = () => {
+      if (!started) { started = true; audio.src = current().src; }
+      audio.play().catch((err) => {
+        if (err && err.name === 'AbortError') return; // superseded by a skip
+        all('status').forEach((el) => { el.textContent = 'Audio unavailable'; });
       });
-      return audio;
     };
-    soundBtns.forEach((btn) => btn.addEventListener('click', () => {
-      const a = ensureAudio();
-      if (a.paused) a.play().then(() => sync(true)).catch(() => sync(false, true));
-      else { a.pause(); sync(false); }
-    }));
+
+    const go = (n, dir, keepPlaying) => {
+      idx = (n + tracks.length) % tracks.length;
+      if (started) audio.src = current().src;
+      render(dir);
+      if (keepPlaying) play();
+    };
+    const next = () => go(idx + 1, 1, playing());
+    const prev = () => {
+      if (audio.currentTime > 3) { audio.currentTime = 0; return; } // like most players: restart first
+      go(idx - 1, -1, playing());
+    };
+    const toggle = () => (playing() ? audio.pause() : play());
+
+    all('play').forEach((b) => b.addEventListener('click', toggle));
+    all('next').forEach((b) => b.addEventListener('click', next));
+    all('prev').forEach((b) => b.addEventListener('click', prev));
+
+    audio.addEventListener('play', paint);
+    audio.addEventListener('pause', paint);
+    audio.addEventListener('playing', () => {
+      failures = 0;
+      paint();
+      all('live').forEach((el) => { el.textContent = `Now playing: ${label()}`; });
+    });
+    audio.addEventListener('ended', () => go(idx + 1, 1, true)); // continue through the queue
+    audio.addEventListener('timeupdate', () => {
+      if (audio.duration) hero.style.setProperty('--p', (audio.currentTime / audio.duration).toFixed(4));
+    });
+    audio.addEventListener('error', () => {
+      if (!started) return;
+      failures += 1;
+      if (failures < tracks.length) go(idx + 1, 1, true); // skip a track that will not load
+      else { paint(); all('status').forEach((el) => { el.textContent = 'Audio unavailable'; }); }
+    });
+
+    if ('mediaSession' in navigator) {
+      const ms = navigator.mediaSession;
+      [['play', play], ['pause', () => audio.pause()], ['nexttrack', next], ['previoustrack', prev]].forEach(([a, fn]) => {
+        try { ms.setActionHandler(a, fn); } catch (e) { /* action not supported */ }
+      });
+    }
+    render();
   }
 
   /* Contact form: validates, then hands off to the visitor's email app.
