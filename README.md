@@ -36,6 +36,16 @@ The colours match the EeZee logo: red, black and white. They are tokens at the t
 
 The logo itself is pure `#FC0000`. White text on pure red only reaches about 4:1 contrast, which fails WCAG AA for button-sized text, so the UI uses `#E10600`. It looks the same next to the logo and passes AA (about 4.9:1). Red on black is used only for large text (the stats) or decoration. Small links in the footer turn white with a red underline on hover rather than red.
 
+## Mobile hero
+
+On screens up to 820px wide the hero is redesigned rather than just shrunk:
+
+- **Layout:** it fits one screen. The turntable photo fills the top, and the tag, headline and two equal-width buttons sit at the bottom over a dark fade.
+- **One message:** the giant "Gospel Music" word and the tag's pill are hidden on phones, so the headline is the only message.
+- **"Now playing" bar:** the desktop glass card and "Play music" pill become one bar (De Samist, "Done It Again"). The play button's ring fills as the track plays.
+- **Shared audio:** both controls share one audio element, set by `data-audio` on the hero `<section>`. Nothing downloads until someone presses play.
+- **Track name:** taken from the audio file name (`De-SAMIST-DONE-IT-AGAIN.mp3`). Change it in the `.hero-player` markup and the `aria-label` in `main.js` if it's wrong.
+
 ## Dark mode
 
 - **Toggle:** the sun/moon button in the header (visible at every screen size). The icon morphs between sun and moon, and a red ring pulses out of the button on each click.

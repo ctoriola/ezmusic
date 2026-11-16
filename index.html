@@ -129,7 +129,7 @@
   <main id="main">
 
     <!-- ===================== HERO ===================== -->
-    <section class="hero wrap" aria-labelledby="hero-title">
+    <section class="hero wrap" aria-labelledby="hero-title" data-audio="https://new.eezeeconceptz.org/assets/De-SAMIST-DONE-IT-AGAIN.mp3">
       <div class="hero-card">
         <img class="hero-bg" src="assets/img/hero.webp" alt="" width="2000" height="1333" fetchpriority="high">
 
@@ -151,10 +151,24 @@
           </div>
         </div>
 
-        <button class="sound-toggle" type="button" aria-pressed="false" data-src="https://new.eezeeconceptz.org/assets/De-SAMIST-DONE-IT-AGAIN.mp3">
+        <button class="sound-toggle" type="button" aria-pressed="false" data-sound>
           <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
           <span class="sound-label">Play music</span>
         </button>
+
+        <!-- Mobile only: glass card + music toggle merged into a "now playing" bar -->
+        <div class="hero-player glass" role="group" aria-label="Featured track">
+          <img src="assets/img/artist-desamist.webp" alt="" width="900" height="900">
+          <div class="hp-meta">
+            <strong>Done It Again</strong>
+            <span>De Samist</span>
+          </div>
+          <span class="hp-eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+          <button class="hp-play" type="button" aria-pressed="false" aria-label="Play Done It Again by De Samist" data-sound>
+            <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg>
+            <svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" fill="currentColor"/></svg>
+          </button>
+        </div>
       </div>
     </section>
 

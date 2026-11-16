@@ -88,21 +88,37 @@
     counters.forEach((c) => co.observe(c));
   }
 
-  /* Opt-in background music (never autoplays) */
-  const sound = document.querySelector('.sound-toggle');
-  if (sound) {
+  /* Opt-in background music (never autoplays, nothing downloads until play).
+     Desktop uses the pill in the hero corner; mobile uses the "now playing" bar.
+     Both drive one shared Audio element and stay in sync. */
+  const hero = document.querySelector('.hero');
+  const soundBtns = [...document.querySelectorAll('[data-sound]')];
+  const player = document.querySelector('.hero-player');
+  if (hero && soundBtns.length) {
     let audio;
-    const label = sound.querySelector('.sound-label');
-    sound.addEventListener('click', () => {
-      if (!audio) { audio = new Audio(sound.dataset.src); audio.loop = true; audio.volume = 0.5; }
-      const on = sound.getAttribute('aria-pressed') !== 'true';
-      if (on) {
-        audio.play().then(() => { sound.setAttribute('aria-pressed', 'true'); label.textContent = 'Music on'; })
-          .catch(() => { label.textContent = 'Audio unavailable'; });
-      } else {
-        audio.pause(); sound.setAttribute('aria-pressed', 'false'); label.textContent = 'Play music';
-      }
-    });
+    const sync = (playing, failed) => {
+      soundBtns.forEach((btn) => {
+        btn.setAttribute('aria-pressed', String(playing));
+        const label = btn.querySelector('.sound-label');
+        if (label) label.textContent = failed ? 'Audio unavailable' : playing ? 'Music on' : 'Play music';
+        if (btn.classList.contains('hp-play')) btn.setAttribute('aria-label', `${playing ? 'Pause' : 'Play'} Done It Again by De Samist`);
+      });
+      if (player) player.classList.toggle('is-playing', playing);
+    };
+    const ensureAudio = () => {
+      if (audio) return audio;
+      audio = new Audio(hero.dataset.audio);
+      audio.loop = true; audio.volume = 0.5;
+      audio.addEventListener('timeupdate', () => {
+        if (player && audio.duration) player.style.setProperty('--p', (audio.currentTime / audio.duration).toFixed(4));
+      });
+      return audio;
+    };
+    soundBtns.forEach((btn) => btn.addEventListener('click', () => {
+      const a = ensureAudio();
+      if (a.paused) a.play().then(() => sync(true)).catch(() => sync(false, true));
+      else { a.pause(); sync(false); }
+    }));
   }
 
   /* Contact form: validates, then hands off to the visitor's email app.
