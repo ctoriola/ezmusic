@@ -1,6 +1,6 @@
 # EeZee Conceptz: homepage rebuild
 
-A static homepage for **new.eezeeconceptz.org**. It uses the content and section order of the current site and the design language of the Gelaf Framer template (gelaf.framer.website).
+A static homepage for **new.eezeeconceptz.org**. It uses the content and section order of the current site and the layout and design language of the Gelaf Framer template (gelaf.framer.website), recoloured to the EeZee logo.
 
 See **[CRITIQUE.md](CRITIQUE.md)** for the review of the current site.
 
@@ -22,17 +22,19 @@ assets/img/           WebP images resized to display size (~1.1 MB total)
 assets/fonts/         Satoshi 300/400/500 (Fontshare free licence); Inter comes from Google Fonts
 ```
 
-## Changing the palette
+## Palette
 
-The colours are tokens at the top of `assets/css/styles.css`. The defaults follow Gelaf (deep green `#1c403d`, lime `#e4ee4f`). To match EeZee's red, black and white logo instead, change these:
+The colours match the EeZee logo: red, black and white. They are tokens at the top of `assets/css/styles.css`:
 
-```css
---brand: #141414;
---brand-deep: #0b0b0b;
---accent: #e2231a;
---accent-soft: #fdf2f1;
---muted: #5c5c5c;
-```
+| Token | Value | Used for |
+|---|---|---|
+| `--brand` | `#0e0e0e` | Black blocks, primary buttons, footer |
+| `--accent` | `#e10600` | Logo red: CTAs, stats, icons, gradients, hovers |
+| `--accent-ink` | `#c40500` | Small red text on white (section labels, artiste links) |
+| `--accent-soft` | `#fff4f3` | Cards on the red gradient |
+| `--muted` | `#5e5e5e` | Secondary text |
+
+The logo itself is pure `#FC0000`. White text on pure red only reaches about 4:1 contrast, which fails WCAG AA for button-sized text, so the UI uses `#E10600`. It looks the same next to the logo and passes AA (about 4.9:1). Red on black is used only for large text (the stats) or decoration. Small links in the footer turn white with a red underline on hover rather than red.
 
 ## Wiring up the forms
 
