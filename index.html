@@ -6,7 +6,16 @@
   <title>EeZee Conceptz | Gospel Music Label &amp; Artiste Development</title>
   <meta name="description" content="EeZee Conceptz is a gospel music label and creative company focused on artiste development, production, and global distribution.">
   <meta name="robots" content="index,follow">
-  <meta name="theme-color" content="#0e0e0e">
+  <meta name="theme-color" content="#ffffff">
+  <script>
+    /* Apply the saved theme (or the OS setting) before first paint, so there is no flash. */
+    (function () {
+      var t; try { t = localStorage.getItem('ez-theme'); } catch (e) {}
+      if (t !== 'light' && t !== 'dark') t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', t);
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', t === 'dark' ? '#0a0a0a' : '#ffffff');
+    })();
+  </script>
   <link rel="canonical" href="https://new.eezeeconceptz.org/">
   <link rel="icon" type="image/png" href="assets/img/logo.png">
   <meta property="og:type" content="website">
@@ -85,6 +94,21 @@
         <a href="#contact">Contact</a>
       </nav>
       <div class="nav-cta">
+        <button class="theme-toggle" type="button" aria-label="Switch to dark mode" title="Toggle dark mode">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <mask id="moon-mask">
+              <rect x="0" y="0" width="24" height="24" fill="white"/>
+              <circle class="moon-cut" cx="24" cy="10" r="6" fill="black"/>
+            </mask>
+            <circle class="sun-core" cx="12" cy="12" r="5" fill="currentColor" mask="url(#moon-mask)"/>
+            <g class="sun-rays" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <line x1="12" y1="1.5" x2="12" y2="3.5"/><line x1="12" y1="20.5" x2="12" y2="22.5"/>
+              <line x1="1.5" y1="12" x2="3.5" y2="12"/><line x1="20.5" y1="12" x2="22.5" y2="12"/>
+              <line x1="4.6" y1="4.6" x2="6" y2="6"/><line x1="18" y1="18" x2="19.4" y2="19.4"/>
+              <line x1="4.6" y1="19.4" x2="6" y2="18"/><line x1="18" y1="6" x2="19.4" y2="4.6"/>
+            </g>
+          </svg>
+        </button>
         <a class="btn" href="/booking">Book Meeting</a>
         <button class="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu"><span></span></button>
       </div>

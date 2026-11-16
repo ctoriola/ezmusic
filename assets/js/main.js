@@ -134,6 +134,58 @@
     });
   }
 
+  /* Dark mode toggle.
+     With the View Transitions API, the new theme grows out of the toggle as a
+     circle. Otherwise colours cross-fade. Reduced-motion users get an instant switch. */
+  const root = document.documentElement;
+  const toggle = document.querySelector('.theme-toggle');
+  const metaTheme = document.querySelector('meta[name="theme-color"]');
+  const sysDark = window.matchMedia('(prefers-color-scheme: dark)');
+
+  const applyTheme = (t) => {
+    root.setAttribute('data-theme', t);
+    if (metaTheme) metaTheme.setAttribute('content', t === 'dark' ? '#0a0a0a' : '#ffffff');
+    if (toggle) toggle.setAttribute('aria-label', t === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+  };
+  applyTheme(root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light');
+
+  const saved = () => { try { return localStorage.getItem('ez-theme'); } catch (e) { return null; } };
+  const save = (t) => { try { localStorage.setItem('ez-theme', t); } catch (e) { /* storage blocked: theme still applies for this visit */ } };
+
+  /* Follow the OS setting until the visitor picks a theme themselves. */
+  sysDark.addEventListener('change', (e) => { if (!saved()) applyTheme(e.matches ? 'dark' : 'light'); });
+
+  if (toggle) {
+    toggle.addEventListener('click', () => {
+      const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      save(next);
+
+      toggle.classList.remove('pulse');
+      void toggle.offsetWidth; // restart the ring animation
+      toggle.classList.add('pulse');
+
+      if (reduce) { applyTheme(next); return; }
+
+      if (document.startViewTransition) {
+        const r = toggle.getBoundingClientRect();
+        const x = r.left + r.width / 2;
+        const y = r.top + r.height / 2;
+        const radius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+        const vt = document.startViewTransition(() => applyTheme(next));
+        vt.ready.then(() => {
+          root.animate(
+            { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`] },
+            { duration: 750, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', pseudoElement: '::view-transition-new(root)' }
+          );
+        }).catch(() => {});
+      } else {
+        root.classList.add('theme-fade');
+        applyTheme(next);
+        setTimeout(() => root.classList.remove('theme-fade'), 600);
+      }
+    });
+  }
+
   const y = document.getElementById('year');
   if (y) y.textContent = new Date().getFullYear();
 })();

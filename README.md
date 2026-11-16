@@ -36,6 +36,14 @@ The colours match the EeZee logo: red, black and white. They are tokens at the t
 
 The logo itself is pure `#FC0000`. White text on pure red only reaches about 4:1 contrast, which fails WCAG AA for button-sized text, so the UI uses `#E10600`. It looks the same next to the logo and passes AA (about 4.9:1). Red on black is used only for large text (the stats) or decoration. Small links in the footer turn white with a red underline on hover rather than red.
 
+## Dark mode
+
+- **Toggle:** the sun/moon button in the header (visible at every screen size). The icon morphs between sun and moon, and a red ring pulses out of the button on each click.
+- **Switch animation:** in browsers with the View Transitions API (Chrome, Edge, Safari 18+), the new theme grows out of the toggle as a circle. Other browsers get a short colour cross-fade. Visitors with "reduce motion" turned on get an instant switch.
+- **Default:** follows the visitor's device setting until they press the toggle. After that, their choice is saved in the browser (`localStorage`, key `ez-theme`) and restored on the next visit.
+- **No flash:** a small script in `<head>` sets the theme before the page paints. Without JavaScript, the page still follows the device setting.
+- **Colours:** dark values are in the `:root[data-theme="dark"]` block near the top of `assets/css/styles.css`. Small red text switches to a lighter red (`#ff5a50`) so it stays readable on black.
+
 ## Wiring up the forms
 
 The contact and newsletter forms validate input and then open the visitor's email app, addressed to hello@eezeeconceptz.org. To send submissions to a backend (a Supabase table, an n8n or Make webhook, Formspree), replace the `window.location.href = 'mailto:...'` lines in `assets/js/main.js` with a `fetch()` POST.
